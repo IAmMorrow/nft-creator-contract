@@ -25,8 +25,8 @@ contract ERC721Collection is IERC721Metadata, ERC721, AccessControl {
             super.supportsInterface(interfaceId);
     }
 
-    // TODO: add permission
     function setStorageURI(string memory storageURI) public {
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Authorized operation");
         _storageURI = storageURI;
     }
 
