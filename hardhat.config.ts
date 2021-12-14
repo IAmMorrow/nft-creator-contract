@@ -20,12 +20,12 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  defaultNetwork: "mainnet",
+  defaultNetwork: "mumbai",
   networks: {
-    mainnet: {
-      url: "https://bsc-dataseed.binance.org/",
+    mumbai: {
+      url: "https://rpc-mumbai.maticvigil.com",
       accounts: {
-
+        mnemonic: "pizza delay learn inmate nature amateur regular giant nothing include east pear myself daring tooth keep vivid corn flower begin ceiling glimpse dose pattern"
       }
     }
   },
