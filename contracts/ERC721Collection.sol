@@ -33,5 +33,4 @@ contract ERC721Collection is IERC721Metadata, ERC721, AccessControl {
     function _baseURI() internal view override returns (string memory) {
         return _storageURI;
     }
-
 }
