@@ -6,19 +6,19 @@ describe("Factory", function () {
         const [owner, addr1] = await ethers.getSigners();
 
         // Deploy the NFTCreator factory as owner signer.
-        const Factory = await ethers.getContractFactory("NFTCreator");
-        const factory = await Factory.deploy();
-        await factory.deployed();
+        const NFTCreatorContract = await ethers.getContractFactory("NFTCreator");
+        const nftCreator         = await NFTCreatorContract.deploy();
+        await nftCreator.deployed();
 
         // Create a collection as another signer (i.e. addr1).
-        const Collection   = await ethers.getContractFactory("ERC721Collection");
-        const createResult = await factory.connect(addr1).createERC721("collection1", "item");
+        const ERC721CollectionContract = await ethers.getContractFactory("ERC721Collection");
 
-        // Get the newly created collection from address.
-        const colAddress1 = createResult.to;
-        const collection1 = await Collection.attach(colAddress1);
+        // Check that total token supply is zero.
+        const createTx  = await nftCreator.connect(addr1).createERC721("collection1", "item");
+        const txReceipt = await ethers.provider.getTransactionReceipt(createTx.hash);
+        const cAddress  = txReceipt.logs[0].address;
 
-        // Ensure that the collection is empty after creation.
-        expect(await collection1.connect(addr1).totalSupply()).to.equal(0);
+        const collection = await ERC721CollectionContract.attach(cAddress);
+        expect(await collection.totalSupply()).to.equal(0);
   });
 });
