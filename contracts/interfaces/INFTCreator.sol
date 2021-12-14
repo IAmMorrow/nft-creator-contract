@@ -3,8 +3,19 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/interfaces/IERC20.sol";
-
 interface INFTCreator {
-    function createERC721(string memory collectionName, string memory itemName) external returns (address erc721Instance);
+    /**
+     * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
+     */
+    event CollectionCreated(address indexed collection, address indexed creator);
+
+    /**
+     * @dev Return all collections created by `owner`
+     */
+    function collectionsByOwner(address owner) external view returns (address[] memory);
+
+    /**
+     * @dev Create a new ERC721 contract and give it to the sender
+     */
+    function createERC721(string memory name, string memory symbol) external returns (address);
 }
