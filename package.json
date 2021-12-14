@@ -4,8 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "generate-types": "typechain --target=ethers-v5 'abis/*.json' --out-dir 'typechain'",
-    "postinstall": "yarn generate-types"
+    "generate-types": "typechain --target=ethers-v5 'abis/*.json' --out-dir 'typechain'"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
