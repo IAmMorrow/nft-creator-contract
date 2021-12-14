@@ -1,32 +1,24 @@
 import { expect } from "chai";
 import  { ethers } from "hardhat";
-import { BigNumber } from "ethers";
 
-describe("TheFrontMan", function () {
-  it("Should create a game", async function () {
-    const StakeGameToken = await ethers.getContractFactory("StakeGameToken");
-    const stakeGameToken = await StakeGameToken.deploy(BigNumber.from("1000000000000000000000000")); // 10 * 10**6 * 10**18
-    await stakeGameToken.deployed();
-    console.log(stakeGameToken.address)
+describe("Factory", function () {
+    it("Create an empty collection", async function () {
+        const [owner, addr1] = await ethers.getSigners();
 
-    const TheFrontMan = await ethers.getContractFactory("TheFrontMan");
-    const theFrontMan = await TheFrontMan.deploy();
-    await theFrontMan.deployed();
+        // Deploy the NFTCreator factory as owner signer.
+        const Factory = await ethers.getContractFactory("NFTCreator");
+        const factory = await Factory.deploy();
+        await factory.deployed();
 
-    const newGameTX = await theFrontMan.newGame([stakeGameToken.address], [0], Math.floor(Date.now() /1000), 8, 60 * 10, 100);
-    await newGameTX.wait();
+        // Create a collection as another signer (i.e. addr1).
+        const Collection   = await ethers.getContractFactory("ERC721Collection");
+        const createResult = await factory.connect(addr1).createERC721("collection1", "item");
 
-    const gameCount = await theFrontMan.gameCount();
-    expect(gameCount).to.equal(1);
+        // Get the newly created collection from address.
+        const colAddress1 = createResult.to;
+        const collection1 = await Collection.attach(colAddress1);
 
-    const gameId = await theFrontMan.gameById(0);
-
-    console.log(gameId)
-
-    const approveTX = await stakeGameToken.approve(theFrontMan.address, "100000000");
-    await approveTX.wait();
-
-    const stakeTX = await theFrontMan.stake(0);
-    await stakeTX.wait();
+        // Ensure that the collection is empty after creation.
+        expect(await collection1.connect(addr1).totalSupply()).to.equal(0);
   });
 });
