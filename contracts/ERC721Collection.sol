@@ -13,7 +13,8 @@ contract ERC721Collection is IERC721Metadata, ERC721, AccessControl {
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
     constructor(address admin, string memory name, string memory symbol) ERC721(name, symbol) {
-        
+        // Set the admin role to the owner of the contract.
+        _setupRole(DEFAULT_ADMIN_ROLE, admin);
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControl, ERC721, IERC165) returns (bool) {
