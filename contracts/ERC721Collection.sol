@@ -17,11 +17,30 @@ contract ERC721Collection is IERC721Metadata, ERC721, ERC721Enumerable, AccessCo
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
-    constructor(address creator, string memory name, string memory symbol) ERC721(name, symbol) {
+    constructor(string memory name, string memory symbol, string memory baseURI) ERC721(name, symbol) {
+        address creator = msg.sender;
+
         // Set the admin role to the owner of the contract.
         _setupRole(DEFAULT_ADMIN_ROLE, creator);
         _setupRole(MINTER_ROLE, creator);
         _setupRole(BURNER_ROLE, creator);
+
+        // Set storage URI.
+        _storageURI = string(abi.encodePacked(baseURI, addressToString(address(this))));
+    }
+
+    function addressToString(address _addr) private pure returns(string memory) {
+        bytes32 value = bytes32(uint256(uint160(_addr)));
+        bytes memory alphabet = "0123456789abcdef";
+
+        bytes memory str = new bytes(51);
+        str[0] = "0";
+        str[1] = "x";
+        for (uint i = 0; i < 20; i++) {
+            str[2+i*2] = alphabet[uint(uint8(value[i + 12] >> 4))];
+            str[3+i*2] = alphabet[uint(uint8(value[i + 12] & 0x0f))];
+        }
+        return string(str);
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControl, ERC721, IERC165, ERC721Enumerable) returns (bool) {
